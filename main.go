@@ -39,6 +39,19 @@ func main() {
 	case "update":
 		tk, val := container.Update(args[1], args[2])
 		fmt.Println(*tk, val)
+	case "delete":
+		isDone, val := container.Delete(args[1])
+		if isDone {
+			fmt.Println(val)
+		} else {
+			fmt.Println(val)
+		}
+	case "list":
+		container.List()
+	case "list done":
+		container.ListTasksDone()
+	case "list inProgress":
+		container.ListTasksInProgress()
 	default:
 		fmt.Println("Invalid command")
 	}

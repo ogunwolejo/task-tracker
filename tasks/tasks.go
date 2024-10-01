@@ -57,16 +57,16 @@ func (tk *TaskContainer) Update(taskId string, status string) (*Task, string) {
 		return nil, cE.msg
 	}
 
-	tk.Items[*searchTaskedId].UpdateStatus(status)
-	return &tk.Items[*searchTaskedId], tk.Items[*searchTaskedId].GetStatus()
+	tk.Items[searchTaskedId].UpdateStatus(status)
+	return &tk.Items[searchTaskedId], tk.Items[searchTaskedId].GetStatus()
 }
 
-func (tk *TaskContainer) getTaskIndex(taskId string) (*int, error) {
+func (tk *TaskContainer) getTaskIndex(taskId string) (int, error) {
 	taskFound := false
-	var fetchedTaskIndex *int = nil
-	for i, t := range tk.Items {
-		if t.Id == taskId {
-			*fetchedTaskIndex = i
+	fetchedTaskIndex := -1
+	for i := 0; i < len(tk.Items); i++ {
+		if tk.Items[i].Id == taskId {
+			fetchedTaskIndex = i
 			taskFound = true
 		}
 	}
@@ -75,7 +75,7 @@ func (tk *TaskContainer) getTaskIndex(taskId string) (*int, error) {
 		return fetchedTaskIndex, nil
 	}
 
-	return nil, errors.New("no task id matched the id that was passed")
+	return fetchedTaskIndex, errors.New("no task id matched the id that was passed")
 }
 
 func (tk *TaskContainer) Delete(taskId string) (bool, string) {
@@ -84,9 +84,37 @@ func (tk *TaskContainer) Delete(taskId string) (bool, string) {
 		return false, fmt.Sprintln(err)
 	}
 
-	i := *searchedTaskIndex
-	tk.Items = append(tk.Items[:i], tk.Items[i+1:]...)
-	return true, fmt.Sprintf("task with name %v was deleted", tk.Items[i].Name)
+	i := searchedTaskIndex
+	if i == len(tk.Items)-1 {
+		newItem := tk.Items[:i]
+		fmt.Println("new item", newItem)
+		tk.Items = append(make([]Task, 0), newItem...)
+	} else {
+		tk.Items = append(tk.Items[:i], tk.Items[i+1:]...)
+	}
+	return true, fmt.Sprintf("updated task are %v ", tk.Items)
+}
+
+func (tk *TaskContainer) List() {
+	for _, t := range tk.Items {
+		t.ShowInfo()
+	}
+}
+
+func (tk *TaskContainer) ListTasksDone() {
+	for _, t := range tk.Items {
+		if t.Status == taskDone {
+			t.ShowInfo()
+		}
+	}
+}
+
+func (tk *TaskContainer) ListTasksInProgress() {
+	for _, t := range tk.Items {
+		if t.Status == taskInprogress {
+			t.ShowInfo()
+		}
+	}
 }
 
 func (tk *TaskContainer) FetchData(data []Task) {
