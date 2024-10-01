@@ -22,3 +22,19 @@
 * Use the native file system module of your programming language to interact with the JSON file
 * Do not use any external libraries or frameworks to build this project.
 * Ensure to handle errors and edge cases gracefully.
+
+
+## Instructions to use the cli 
+### ADD a new task
+    go run main.go add <Task name>
+### UPDATE Status of a task
+    go run main.go update <Task ID> <TASK STATUS>
+    note: <TASK STATUS> must be either DONE or PROGRESS
+### DELETE a task 
+    go run main.go delete <Task ID>
+### SHOW all tasks
+    go run main.go list
+### SHOW all tasks in progress
+    go run main.go "list inProgress"
+### SHOW all tasks done
+    go run main.go "list done"
